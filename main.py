@@ -3,15 +3,16 @@ import torch
 from condition.area_condition import AreaCondition
 from condition.boundary_condition import BoundaryCondition
 from condition.resolver import Resolver
-from dlc.after_loss_calculated_dlc.lambda_losses_regularization_dlc import LambdaLossesRegularizationDLC
+from dlc.after_loss_calculated_dlc.normal_losses_regularization_dlc import NormalLossesRegularizationDLC
 from generator.uniform_generator import UniformGenerator
 from neural_network.feedforward_neural_network import FNN
-from pde.pde import PDE
 from pinn.pinn import PINN
 
 
 def PDE_function(x: torch.Tensor, t: torch.Tensor, u: torch.Tensor):
-    return PDE.diff_x(t, u) - PDE.diff_xx(x, u) - 2 + 4 * torch.exp(2 * x)
+    u_x, u_t = torch.autograd.grad(u, [x, t], grad_outputs=torch.ones_like(u), create_graph=True)
+    u_xx = torch.autograd.grad(u_x, x, grad_outputs=torch.ones_like(u), create_graph=True)[0]
+    return u_t - u_xx - 2 + 4 * torch.exp(2 * x)
 
 
 if __name__ == '__main__':
@@ -53,7 +54,7 @@ if __name__ == '__main__':
         generator=UniformGenerator(device),
         count_of_epoch=5_000,
         dlcs=[
-            LambdaLossesRegularizationDLC()
+            NormalLossesRegularizationDLC()
         ]
     )
 

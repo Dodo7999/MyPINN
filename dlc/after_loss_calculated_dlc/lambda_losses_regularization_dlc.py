@@ -12,7 +12,7 @@ class LambdaLossesRegularizationDLC(AfterLossCalculatedDLC):
 
     def do(self, losses: List[torch.Tensor]):
         last_layers = list(list(self.model.children())[-1].children())[-1]
-        alpha = 0.1
+        alpha = 0.5
         if self.lambda_regularization is None:
             self.lambda_regularization = torch.ones((len(losses) - 1))
 
@@ -27,4 +27,5 @@ class LambdaLossesRegularizationDLC(AfterLossCalculatedDLC):
             ).mean()
             self.optimizer.zero_grad()
             losses[ind] = losses[ind] * ((1 - alpha) * self.lambda_regularization[ind] + alpha * regularization)
+            self.lambda_regularization[ind] = regularization
         return losses
