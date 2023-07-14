@@ -3,6 +3,7 @@ import torch
 from condition.area_condition import AreaCondition
 from condition.boundary_condition import BoundaryCondition
 from condition.resolver import Resolver
+from dlc.after_loss_calculated_dlc.lambda_losses_regularization_dlc import LambdaLossesRegularizationDLC
 from generator.uniform_generator import UniformGenerator
 from neural_network.feedforward_neural_network import FNN
 from pde.pde import PDE
@@ -52,7 +53,7 @@ if __name__ == '__main__':
         generator=UniformGenerator(device),
         count_of_epoch=5_000,
         dlcs=[
-            # LambdaLossesRegularizationDLC()
+            LambdaLossesRegularizationDLC()
         ]
     )
 
