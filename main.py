@@ -5,12 +5,17 @@ from PDE import PDE
 from PINN import PINN
 from neural_network.feedforward_neural_network import FNN
 
+
+def PDE_function(x: torch.Tensor, t: torch.Tensor, u: torch.Tensor):
+    return PDE.diff_x(t, u) - PDE.diff_xx(x, u) - 2 + 4 * torch.exp(2 * x)
+
+
 if __name__ == '__main__':
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     resolver = Resolver(
         conditions=[
             AreaCondition(
-                condition=lambda x, t, u: PDE.diff_x(t, u) - PDE.diff_xx(x, u) - 2 + 4 * torch.exp(2 * x)
+                condition=PDE_function
             ),
             BoundaryCondition(
                 condition=lambda x: torch.exp(2 * x),
@@ -29,12 +34,12 @@ if __name__ == '__main__':
             )
         ],
         coordinates=[
-            [0, 1, 50],
-            [0, 2, 50]
+            [0, 1, 100],
+            [0, 2, 100]
         ],
         device=device
     )
-    layers = [2, 128, 128, 1]
+    layers = [2, 128, 128, 128, 1]
 
     model = FNN(layers_all=layers).to(device)
 

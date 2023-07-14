@@ -9,6 +9,15 @@ class Condition:
     def __init__(self, condition: Callable):
         self.condition = condition
 
+    def initialize(self, data: torch.Tensor):
+        pass
+
+    def get_data(self):
+        pass
+
+    def get_loss(self, u):
+        pass
+
 
 class AreaCondition(Condition):
     def __init__(self, condition: Callable):
@@ -23,6 +32,9 @@ class AreaCondition(Condition):
         self.data = values
 
     def get_data(self):
+        values = self.data
+        for ind, value in enumerate(values):
+            self.data[ind] = value.detach().requires_grad_()
         return torch.cat(self.data, dim=1)
 
     def get_loss(self, u):
@@ -35,7 +47,7 @@ class AreaCondition(Condition):
             loss_area = self.condition(self.data[0], self.data[1], self.data[2], u)
         elif len(self.data) == 4:
             loss_area = self.condition(self.data[0], self.data[1], self.data[2], self.data[3], u)
-        return torch.mean(loss_area)**2
+        return torch.mean(loss_area) ** 2
 
 
 class BoundaryCondition(Condition):
@@ -48,24 +60,22 @@ class BoundaryCondition(Condition):
 
     def initialize(self, data: torch.Tensor):
         self.data = data
-        for point_all in data:
-            point = point_all[~self.value_index].reshape(-1)
-            if point.shape[0] == 1:
-                self.value = self.condition(point[0])
-            elif point.shape[0] == 2:
-                self.value = self.condition(point[0], point[1])
-            elif point.shape[0] == 3:
-                self.value = self.condition(point[0], point[1], point[2])
-            elif point.shape[0] == 4:
-                self.value = self.condition(point[0], point[1], point[2], point[3])
-            elif point.shape[0] == 5:
-                self.value = self.condition(point[0], point[1], point[2], point[3], point[4])
+        point = data[:, ~self.value_index]
+        if data.shape[1] == 2:
+            point = point.reshape(-1, 1)
+            self.value = self.condition(point).detach()
+        elif point.shape[1] == 3:
+            self.value = self.condition(point[0], point[1]).detach()
+        elif point.shape[1] == 4:
+            self.value = self.condition(point[0], point[1], point[2]).detach()
+        elif point.shape[1] == 5:
+            self.value = self.condition(point[0], point[1], point[2], point[3]).detach()
 
     def get_data(self):
-        return self.data
+        return self.data.detach().requires_grad_()
 
     def get_loss(self, u):
-        return torch.mean((u-self.value)**2)
+        return torch.mean((u - self.value) ** 2)
 
 
 class Resolver:

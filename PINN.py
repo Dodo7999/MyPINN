@@ -1,6 +1,7 @@
 from typing import Callable
 
 import torch
+import tqdm
 
 from Condition import Resolver
 
@@ -25,8 +26,10 @@ class PINN:
         self.resolver.initialize_conditions()
 
     def train(self):
+        self.model.train()
+        iterations = tqdm.trange(5000 + 1, desc="Here we will write the loss")
         conditions = self.resolver.conditions
-        for i in range(5000):
+        for it in iterations:
             self.optimizer.zero_grad(set_to_none=True)
             losses = []
             for condition in conditions:
@@ -35,7 +38,11 @@ class PINN:
                 loss = condition.get_loss(u)
                 losses.append(loss)
             loss_t = torch.stack(losses).sum()
-            print(loss_t)
             loss_t.backward()
             self.optimizer.step()
             self.scheduler.step()
+            curr_lr = self.optimizer.param_groups[0]["lr"]
+            iterations.set_description(
+                f"At epoch #{it}: loss = {loss_t:.3e}, lr = {curr_lr:.3e}, rel_er=--"
+            )
+            iterations.refresh()
