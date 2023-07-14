@@ -8,14 +8,7 @@ class Generator:
         super().__init__()
         self.device = device
 
-    def get_1D_data(self, coordinate: List[int]):
-        return torch.linspace(
-            coordinate[0],
-            coordinate[1],
-            coordinate[2]
-        ).unsqueeze(1).float().to(self.device).requires_grad_()
-
-    def get_2D_data(self, coordinate: List[List[int]], index: int, value: int):
+    def get_data(self, coordinate: List[List[int]], index: int, value: int):
         bound = []
         for ind_y, y in enumerate(coordinate):
             if ind_y != index:
@@ -23,12 +16,6 @@ class Generator:
             else:
                 bound.append(torch.ones(y[2]) * value)
         return torch.stack(bound, dim=1).float().to(self.device).requires_grad_()
-
-    def get_3D_data(self, coordinate: List[List[int]]):
-        return torch.linspace(coordinate[0], coordinate[1], coordinate[2])
-
-    def get_4D_data(self, coordinate: List[List[int]]):
-        return torch.linspace(coordinate[0], coordinate[1], coordinate[2])
 
     def get_1D_data_area(self, coordinate: List[int]):
         return torch.linspace(coordinate[0], coordinate[1], coordinate[2])
