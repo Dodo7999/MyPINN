@@ -1,10 +1,11 @@
 import torch
 
-from Condition import Resolver, AreaCondition, BoundaryCondition
-from DLC import NormalLossesRegularizationDLC, LambdaLossesRegularizationDLC
-from PDE import PDE
-from PINN import PINN
+from condition.area_condition import AreaCondition
+from condition.boundary_condition import BoundaryCondition
+from condition.resolver import Resolver
 from neural_network.feedforward_neural_network import FNN
+from pde.pde import PDE
+from pinn.pinn import PINN
 
 
 def PDE_function(x: torch.Tensor, t: torch.Tensor, u: torch.Tensor):

@@ -2,11 +2,12 @@ from typing import List
 
 import torch
 
+from generator.generator import Generator
 
-class Generator:
+
+class UniformGenerator(Generator):
     def __init__(self, device: torch.device):
-        super().__init__()
-        self.device = device
+        super().__init__(device)
 
     def get_data(self, coordinate: List[List[int]], index: int, value: int):
         bound = []
