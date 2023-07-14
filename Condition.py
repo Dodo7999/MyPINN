@@ -89,15 +89,5 @@ class Resolver:
             condition.initialize(data)
 
         for ind, condition in enumerate(list_area):
-            if len(self.coordinates) == 1:
-                data = self.generator.get_1D_data_area(self.coordinates)
-                condition.initialize(data)
-            elif len(self.coordinates) == 2:
-                data = self.generator.get_2D_data_area(self.coordinates)
-                condition.initialize(data)
-            elif len(self.coordinates) == 3:
-                data = self.generator.get_3D_data_area(self.coordinates)
-                condition.initialize(data)
-            elif len(self.coordinates) == 4:
-                data = self.generator.get_4D_data_area(self.coordinates)
-                condition.initialize(data)
+            data = self.generator.get_data_area(self.coordinates)
+            condition.initialize(data)
