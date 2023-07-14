@@ -38,15 +38,7 @@ class AreaCondition(Condition):
         return torch.cat(self.data, dim=1)
 
     def get_loss(self, u):
-        loss_area = None
-        if len(self.data) == 1:
-            loss_area = self.condition(self.data[0], u)
-        elif len(self.data) == 2:
-            loss_area = self.condition(self.data[0], self.data[1], u)
-        elif len(self.data) == 3:
-            loss_area = self.condition(self.data[0], self.data[1], self.data[2], u)
-        elif len(self.data) == 4:
-            loss_area = self.condition(self.data[0], self.data[1], self.data[2], self.data[3], u)
+        loss_area = self.condition(*self.data, u)
         return torch.mean(loss_area) ** 2
 
 
@@ -64,12 +56,8 @@ class BoundaryCondition(Condition):
         if data.shape[1] == 2:
             point = point.reshape(-1, 1)
             self.value = self.condition(point).detach()
-        elif point.shape[1] == 3:
-            self.value = self.condition(point[0], point[1]).detach()
-        elif point.shape[1] == 4:
-            self.value = self.condition(point[0], point[1], point[2]).detach()
-        elif point.shape[1] == 5:
-            self.value = self.condition(point[0], point[1], point[2], point[3]).detach()
+        else:
+            self.value = self.condition(*point).detach()
 
     def get_data(self):
         return self.data.detach().requires_grad_()
