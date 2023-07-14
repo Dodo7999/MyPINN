@@ -4,6 +4,7 @@ import torch
 
 from condition.resolver import Resolver
 from dlc.dlc import DLC
+from generator.generator import Generator
 from trainer.trainer import Trainer
 
 
@@ -14,6 +15,7 @@ class PINN:
             device: torch.device,
             resolver: Resolver,
             count_of_epoch: int,
+            generator: Generator,
             loss_function=torch.nn.MSELoss(),
             optimizer=torch.optim.Adam,
             scheduler=torch.optim.lr_scheduler.ExponentialLR,
@@ -26,6 +28,7 @@ class PINN:
         self.loss_function = loss_function
         self.optimizer = optimizer(model.parameters())
         self.scheduler = scheduler(self.optimizer, gamma=0.9999)
+        self.resolver.set_generator(generator)
         self.resolver.initialize_conditions()
         for dlc in dlcs:
             dlc.apply(

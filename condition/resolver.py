@@ -5,14 +5,17 @@ import torch
 from condition.area_condition import AreaCondition
 from condition.boundary_condition import BoundaryCondition
 from condition.condition import Condition
-from generator.uniform_generator import UniformGenerator
+from generator.generator import Generator
 
 
 class Resolver:
-    def __init__(self, coordinates: list, conditions: List[Condition], device: torch.device):
+    def __init__(self, coordinates: list, conditions: List[Condition]):
         self.coordinates = coordinates
         self.conditions = conditions
-        self.generator = UniformGenerator(device)
+        self.generator = None
+
+    def set_generator(self, generator: Generator):
+        self.generator = generator
 
     def initialize_conditions(self):
         filtered_not_area = filter(

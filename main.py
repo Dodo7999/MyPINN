@@ -3,6 +3,7 @@ import torch
 from condition.area_condition import AreaCondition
 from condition.boundary_condition import BoundaryCondition
 from condition.resolver import Resolver
+from generator.uniform_generator import UniformGenerator
 from neural_network.feedforward_neural_network import FNN
 from pde.pde import PDE
 from pinn.pinn import PINN
@@ -39,7 +40,6 @@ if __name__ == '__main__':
             [0, 1, 50],
             [0, 2, 50]
         ],
-        device=device
     )
     layers = [2, 128, 128, 128, 1]
 
@@ -49,6 +49,7 @@ if __name__ == '__main__':
         model=model,
         device=device,
         resolver=resolver,
+        generator=UniformGenerator(device),
         count_of_epoch=5_000,
         dlcs=[
             # LambdaLossesRegularizationDLC()
