@@ -16,11 +16,7 @@ class BoundaryCondition(Condition):
     def initialize(self, data: torch.Tensor):
         self.data = data
         point = data[:, torch.arange(data.shape[1]) != self.value_index]
-        if data.shape[1] == 2:
-            point = point.reshape(-1, 1)
-            self.value = self.condition(point).detach()
-        else:
-            self.value = self.condition(*point.T).detach()
+        self.value = self.condition(*point.T).reshape(-1,1).detach()
 
     def get_data(self):
         return self.data.detach().requires_grad_()
