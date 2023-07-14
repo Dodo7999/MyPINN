@@ -1,9 +1,10 @@
-from typing import Callable
+from typing import Callable, List
 
 import torch
 import tqdm
 
 from Condition import Resolver
+from DLC import DLC, AfterLossCalculatedDLC
 
 
 class PINN:
@@ -12,22 +13,35 @@ class PINN:
             model: torch.nn.Module,
             device: torch.device,
             resolver: Resolver,
+            count_of_epoch: int,
             loss_function=torch.nn.MSELoss(),
             optimizer=torch.optim.Adam,
             scheduler=torch.optim.lr_scheduler.ExponentialLR,
-
+            dlcs: List[DLC] = []
     ):
         self.model = model
+        self.count_of_epoch = count_of_epoch
         self.device = device
         self.resolver = resolver
         self.loss_function = loss_function
         self.optimizer = optimizer(model.parameters(), 0.01)
         self.scheduler = scheduler(self.optimizer, gamma=0.9999)
         self.resolver.initialize_conditions()
+        for dlc in dlcs:
+            dlc.apply(
+                model=model,
+                device=device,
+                resolver=resolver,
+                count_of_epoch=1_000,
+                loss_function=loss_function,
+                optimizer=self.optimizer,
+                scheduler=self.scheduler
+            )
+        self.dlcs = dlcs
 
     def train(self):
         self.model.train()
-        iterations = tqdm.trange(5000 + 1, desc="Here we will write the loss")
+        iterations = tqdm.trange(self.count_of_epoch + 1, desc="Here we will write the loss")
         conditions = self.resolver.conditions
         for it in iterations:
             self.optimizer.zero_grad(set_to_none=True)
@@ -37,6 +51,9 @@ class PINN:
                 u = self.model(data)
                 loss = condition.get_loss(u)
                 losses.append(loss)
+            for dlc in self.dlcs:
+                if isinstance(dlc, AfterLossCalculatedDLC):
+                    losses = dlc.do(losses)
             loss_t = torch.stack(losses).sum()
             loss_t.backward()
             self.optimizer.step()

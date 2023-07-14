@@ -1,6 +1,7 @@
 import torch
 
 from Condition import Resolver, AreaCondition, BoundaryCondition
+from DLC import NormalLossesRegularizationDLC, LambdaLossesRegularizationDLC
 from PDE import PDE
 from PINN import PINN
 from neural_network.feedforward_neural_network import FNN
@@ -34,8 +35,8 @@ if __name__ == '__main__':
             )
         ],
         coordinates=[
-            [0, 1, 100],
-            [0, 2, 100]
+            [0, 1, 50],
+            [0, 2, 50]
         ],
         device=device
     )
@@ -47,6 +48,10 @@ if __name__ == '__main__':
         model=model,
         device=device,
         resolver=resolver,
+        count_of_epoch=1_000,
+        dlcs=[
+            LambdaLossesRegularizationDLC()
+        ]
     )
 
     pinn.train()
