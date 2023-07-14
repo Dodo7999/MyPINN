@@ -48,9 +48,9 @@ if __name__ == '__main__':
         model=model,
         device=device,
         resolver=resolver,
-        count_of_epoch=1_000,
+        count_of_epoch=5_000,
         dlcs=[
-            LambdaLossesRegularizationDLC()
+            # LambdaLossesRegularizationDLC()
         ]
     )
 

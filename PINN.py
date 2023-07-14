@@ -24,7 +24,7 @@ class PINN:
         self.device = device
         self.resolver = resolver
         self.loss_function = loss_function
-        self.optimizer = optimizer(model.parameters(), 0.01)
+        self.optimizer = optimizer(model.parameters())
         self.scheduler = scheduler(self.optimizer, gamma=0.9999)
         self.resolver.initialize_conditions()
         for dlc in dlcs:
@@ -32,7 +32,7 @@ class PINN:
                 model=model,
                 device=device,
                 resolver=resolver,
-                count_of_epoch=1_000,
+                count_of_epoch=count_of_epoch,
                 loss_function=loss_function,
                 optimizer=self.optimizer,
                 scheduler=self.scheduler
