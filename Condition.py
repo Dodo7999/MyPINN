@@ -83,16 +83,11 @@ class Resolver:
         )
         list_boundary: List[BoundaryCondition] = list(filtered_not_area)
         list_area: List[AreaCondition] = list(filtered_area)
+
         for condition in list_boundary:
-            if len(self.coordinates) == 2:
-                data = self.generator.get_data(self.coordinates, condition.value_index, condition.value_const)
-                condition.initialize(data)
-            elif len(self.coordinates) == 3:
-                data = self.generator.get_data(self.coordinates[~condition.value_index])
-                condition.initialize(data)
-            elif len(self.coordinates) == 4:
-                data = self.generator.get_data(self.coordinates[~condition.value_index])
-                condition.initialize(data)
+            data = self.generator.get_data(self.coordinates, condition.value_index, condition.value_const)
+            condition.initialize(data)
+
         for ind, condition in enumerate(list_area):
             if len(self.coordinates) == 1:
                 data = self.generator.get_1D_data_area(self.coordinates)
