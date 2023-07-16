@@ -3,6 +3,7 @@ import torch
 from condition.area_condition import AreaCondition
 from condition.boundary_condition import BoundaryCondition
 from condition.resolver import Resolver
+from dlc.after_epoch_dlc.visualize_dlc.visualize_prediction_dlc import VisualizePredictionDLC
 from dlc.after_loss_calculated_dlc.regularization_dlc.normal_losses_regularization_dlc import NormalLossesRegularizationDLC
 from generator.uniform_generator import UniformGenerator
 from neural_network.feedforward_neural_network import FNN
@@ -54,7 +55,8 @@ if __name__ == '__main__':
         generator=UniformGenerator(device),
         count_of_epoch=5_000,
         dlcs=[
-            NormalLossesRegularizationDLC()
+            VisualizePredictionDLC()
+            # NormalLossesRegularizationDLC()
         ]
     )
 
