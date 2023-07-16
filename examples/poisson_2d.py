@@ -7,6 +7,7 @@ from dlc.after_epoch_dlc.visualize_dlc.visualize_prediction_dlc import Visualize
 from generator.uniform_generator import UniformGenerator
 from neural_network.feedforward_neural_network import FNN
 from pinn.pinn import PINN
+from settings.settings import VisualizeSettings
 
 
 def PDE_function(x: torch.Tensor, y: torch.Tensor, u: torch.Tensor):
@@ -60,7 +61,7 @@ if __name__ == '__main__':
         generator=UniformGenerator(device),
         count_of_epoch=5_000,
         dlcs=[
-            VisualizePredictionDLC()
+            *VisualizeSettings
         ]
     )
 
