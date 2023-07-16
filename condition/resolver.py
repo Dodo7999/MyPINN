@@ -1,7 +1,5 @@
 from typing import List
 
-import torch
-
 from condition.area_condition import AreaCondition
 from condition.boundary_condition import BoundaryCondition
 from condition.condition import Condition
@@ -40,8 +38,7 @@ class Resolver:
             condition.initialize(data)
 
         for ind, condition in enumerate(list_equals_boundary):
-            if condition.predict_first_value is None:
-                self.conditions.append(condition)
+            self.conditions.append(condition)
             data = self.generator.get_data(self.coordinates, condition.value_index_first, condition.value_const_first)
             condition.initialize(data)
             data = self.generator.get_data(self.coordinates, condition.value_index_second, condition.value_const_second)
@@ -50,3 +47,6 @@ class Resolver:
         for ind, condition in enumerate(list_area):
             data = self.generator.get_data_area(self.coordinates)
             condition.initialize(data)
+
+    def update_condition_data(self):
+        pass
