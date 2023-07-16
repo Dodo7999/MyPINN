@@ -25,4 +25,4 @@ class AreaCondition(Condition):
 
     def get_loss(self, u):
         loss_area = self.condition(*self.data, u)
-        return torch.mean(loss_area) ** 2
+        return torch.mean(loss_area ** 2)

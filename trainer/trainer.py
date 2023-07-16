@@ -4,6 +4,7 @@ import torch.optim
 import tqdm
 
 from condition.resolver import Resolver
+from dlc.after_epoch_dlc.after_epoch_dlc import AfterEpochDLC
 from dlc.after_loss_calculated_dlc.after_loss_calculated_dlc import AfterLossCalculatedDLC
 from dlc.dlc import DLC
 
@@ -52,4 +53,7 @@ class Trainer:
             iterations.set_description(
                 f"At epoch #{it}: loss = {loss_t:.3e}, lr = {curr_lr:.3e}, rel_er=--"
             )
+            for dlc in self.dlcs:
+                if isinstance(dlc, AfterEpochDLC):
+                    dlc.do(losses, loss_t, it)
             iterations.refresh()

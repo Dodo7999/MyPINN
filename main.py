@@ -3,7 +3,7 @@ import torch
 from condition.area_condition import AreaCondition
 from condition.boundary_condition import BoundaryCondition
 from condition.resolver import Resolver
-from dlc.after_loss_calculated_dlc.normal_losses_regularization_dlc import NormalLossesRegularizationDLC
+from dlc.after_loss_calculated_dlc.regularization_dlc.normal_losses_regularization_dlc import NormalLossesRegularizationDLC
 from generator.uniform_generator import UniformGenerator
 from neural_network.feedforward_neural_network import FNN
 from pinn.pinn import PINN

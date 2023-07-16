@@ -3,7 +3,7 @@ import torch
 from condition.area_condition import AreaCondition
 from condition.boundary_condition import BoundaryCondition
 from condition.resolver import Resolver
-from dlc.after_loss_calculated_dlc.normal_losses_regularization_dlc import NormalLossesRegularizationDLC
+from dlc.after_epoch_dlc.visualize_dlc.visualize_prediction_dlc import VisualizePredictionDLC
 from generator.uniform_generator import UniformGenerator
 from neural_network.feedforward_neural_network import FNN
 from pinn.pinn import PINN
@@ -13,7 +13,7 @@ def PDE_function(x: torch.Tensor, y: torch.Tensor, u: torch.Tensor):
     u_x, u_y = torch.autograd.grad(u, [x, y], grad_outputs=torch.ones_like(u), create_graph=True)
     u_xx = torch.autograd.grad(u_x, x, grad_outputs=torch.ones_like(u), create_graph=True)[0]
     u_yy = torch.autograd.grad(u_y, y, grad_outputs=torch.ones_like(u), create_graph=True)[0]
-    return -u_yy - u_xx - torch.pi ** 2 * torch.sin(torch.pi * x) - torch.pi ** 2 * torch.sin(torch.pi * y)
+    return - u_xx - u_yy - torch.pi ** 2 * torch.sin(torch.pi * x) - torch.pi ** 2 * torch.sin(torch.pi * y)
 
 
 if __name__ == '__main__':
@@ -35,7 +35,7 @@ if __name__ == '__main__':
             ),
             BoundaryCondition(
                 condition=lambda y: torch.sin(torch.pi * y) + torch.sin(-torch.tensor(torch.pi)),
-                value_index=0,
+                value_index=1,
                 value_const=-1,
             ),
             BoundaryCondition(
@@ -60,7 +60,7 @@ if __name__ == '__main__':
         generator=UniformGenerator(device),
         count_of_epoch=5_000,
         dlcs=[
-            # NormalLossesRegularizationDLC()
+            VisualizePredictionDLC()
         ]
     )
 
