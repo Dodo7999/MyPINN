@@ -6,7 +6,7 @@ from condition.condition import Condition
 
 
 class BoundaryCondition(Condition):
-    def __init__(self, condition: Callable, value_index: int, value_const: int):
+    def __init__(self, condition: Callable, value_index: float, value_const: float):
         super().__init__(condition)
         self.value = None
         self.data = None
