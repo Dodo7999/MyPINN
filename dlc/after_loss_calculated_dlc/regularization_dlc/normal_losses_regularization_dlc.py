@@ -11,10 +11,10 @@ class NormalLossesRegularizationDLC(AfterLossCalculatedDLC):
 
     def do(self, losses: List[torch.Tensor]):
         last_layers = list(list(self.model.children())[-1].children())[-1]
-        losses[-1].backward(retain_graph=True)
+        losses[0].backward(retain_graph=True)
         var_f = torch.std(last_layers.weight.grad.detach())
         self.optimizer.zero_grad()
-        for ind, los in enumerate(losses[:-1]):
+        for ind, los in enumerate(losses[1:]):
             losses[ind].backward(retain_graph=True)
             var = torch.std(last_layers.weight.grad.detach())
             self.optimizer.zero_grad()

@@ -4,6 +4,9 @@ from condition.area_condition import AreaCondition
 from condition.boundary_condition import BoundaryCondition
 from condition.resolver import Resolver
 from dlc.after_epoch_dlc.visualize_dlc.visualize_prediction_dlc import VisualizePredictionDLC
+from dlc.after_loss_calculated_dlc.regularization_dlc.lambda_losses_regularization_dlc import \
+    LambdaLossesRegularizationDLC
+from dlc.instead_of_loss_dlc.regularization_dlc.big_lambda_losses_regularization import BigLambdaLossesRegularizationDLC
 from generator.uniform_generator import UniformGenerator
 from neural_network.feedforward_neural_network import FNN
 from pinn.pinn import PINN
@@ -61,7 +64,7 @@ if __name__ == '__main__':
         generator=UniformGenerator(device),
         count_of_epoch=5_000,
         dlcs=[
-            *VisualizeSettings
+            BigLambdaLossesRegularizationDLC()
         ]
     )
 
